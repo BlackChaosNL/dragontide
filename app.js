@@ -15,7 +15,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Load all routes
 app.use('/', require("./routes/index"));
+app.use("/dice", require("./routes/dice"));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -32,7 +34,10 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+    "ok": false,
+    "message": err.message,
+  });
 });
 
 module.exports = app;
