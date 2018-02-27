@@ -4,7 +4,10 @@ const pc = require("../lib/param-check");
 const router = express.Router();
 
 router.get("/", (req, res, next) => {
-	const query = Character.find({}).limit(10);
+	// It should be noted that .skip isn't very scalable:
+	// https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js
+	const skip = ((req.params.page || 1) - 1) * 30;
+	const query = Character.find({}).limit(10).skip(skip);
 
 	query.exec((err, characters) => {
 		if (err) {
