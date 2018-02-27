@@ -4,8 +4,26 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+const swagger = require("swagger-jsdoc");
+const dist = require("./package.json");
 
 var app = express();
+
+// Add Swagger
+const swaggerOptions = {
+	swaggerDefinition: {
+		info: {
+			title: dist.name,
+			version: dist.version,
+			description: dist.description || "Nondescript",
+		},
+		host: "localhost:3000",
+		basePath: "/",
+	},
+	apis: [
+		"routes/*.js"
+	],
+};
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -14,6 +32,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use("/swagger.json", (req, res, next) => {
+	res.json(swagger(swaggerOptions));
+});
 
 // Load all routes
 app.use('/', require("./routes/index"));
