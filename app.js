@@ -6,8 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const swagger = require("swagger-jsdoc");
 const dist = require("./package.json");
+const mongoose = require("mongoose");
 
 var app = express();
+
+// Connect to the database
+mongoose.connect("mongodb://localhost/dnd-api");
 
 // Add Swagger
 const swaggerOptions = {
