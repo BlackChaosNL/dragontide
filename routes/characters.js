@@ -3,6 +3,16 @@ const express = require('express');
 const pc = require("../lib/param-check");
 const router = express.Router();
 
+/**
+ * @swagger
+ * /characters:
+ *   get:
+ *     description: Get a list of characters
+ *     produces: application/json
+ *     response:
+ *       200:
+ *         description: A list of 30 characters
+ */
 router.get("/", (req, res, next) => {
 	// It should be noted that .skip isn't very scalable:
 	// https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js
@@ -21,6 +31,18 @@ router.get("/", (req, res, next) => {
 	});
 });
 
+/**
+ * @swagger
+ * /characters/{id}:
+ *   get:
+ *     description: Get info about a single character
+ *     produces: application/json
+ *     response:
+ *       200:
+ *         description: The full data of a single character
+ *       404:
+ *         description: The character was not found
+ */
 router.get("/:id", (req, res, next) => {
 	Character.findById(req.params.id, (err, character) => {
 		if (err) {
@@ -34,6 +56,18 @@ router.get("/:id", (req, res, next) => {
 	});
 });
 
+/**
+ * @swagger
+ * /characters/{id}:
+ *   delete:
+ *     description: Remove an existing character
+ *     produces: application/json
+ *     response:
+ *       200:
+ *         description: The character has been removed
+ *       404:
+ *         description: The character was not found
+ */
 router.delete("/:id", (req, res, next) => {
 	Character.findByIdAndRemove(req.params.id, err => {
 		if (err) {
@@ -46,6 +80,18 @@ router.delete("/:id", (req, res, next) => {
 	});
 });
 
+/**
+ * @swagger
+ * /characters/{id}:
+ *   patch:
+ *     description: Update parts of a character
+ *     produces: application/json
+ *     response:
+ *       200:
+ *         description: The character has been updated
+ *       404:
+ *         description: The character was not found
+ */
 router.patch("/:id", (req, res, next) => {
 	const data = req.body;
 
@@ -85,6 +131,16 @@ router.patch("/:id", (req, res, next) => {
 	});
 });
 
+/**
+ * @swagger
+ * /characters:
+ *   post:
+ *     description: Add a new character
+ *     produces: application/json
+ *     response:
+ *       200:
+ *         description: The new character was created succesfully
+ */
 router.post("/", (req, res, next) => {
 	const data = req.body;
 
