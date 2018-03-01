@@ -16,8 +16,8 @@ const router = express.Router();
 router.get("/", (req, res, next) => {
 	// It should be noted that .skip isn't very scalable:
 	// https://stackoverflow.com/questions/5539955/how-to-paginate-with-mongoose-in-node-js
-	const skip = ((req.params.page || 1) - 1) * 30;
-	const query = Character.find({}).limit(10).skip(skip);
+	const skip = ((req.query.page || 1) - 1) * 30;
+	const query = Character.find({}).limit(30).skip(skip);
 
 	query.exec((err, characters) => {
 		if (err) {
@@ -46,7 +46,11 @@ router.get("/", (req, res, next) => {
 router.get("/:id", (req, res, next) => {
 	Character.findById(req.params.id, (err, character) => {
 		if (err) {
-			throw err;
+			return res.status(404)
+				.json({
+					ok: false,
+					error: err,
+				});
 		}
 
 		return res.json({
@@ -71,7 +75,11 @@ router.get("/:id", (req, res, next) => {
 router.delete("/:id", (req, res, next) => {
 	Character.findByIdAndRemove(req.params.id, err => {
 		if (err) {
-			throw err;
+			return res.status(404)
+				.json({
+					ok: false,
+					error: err,
+				});
 		}
 
 		return res.json({
@@ -98,7 +106,11 @@ router.patch("/:id", (req, res, next) => {
 	// Find the character
 	Character.findById(req.params.id, (err, character) => {
 		if (err) {
-			throw err;
+			return res.status(404)
+				.json({
+					ok: false,
+					error: err,
+				});
 		}
 
 		// Update the stats
