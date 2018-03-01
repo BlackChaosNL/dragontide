@@ -6,8 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const swagger = require("swagger-jsdoc");
 const dist = require("./package.json");
+const mongoose = require("mongoose");
+const config = require("./config/app.js");
 
 var app = express();
+
+// Connect to the database
+mongoose.connect("mongodb://" + config.db.host + "/" + config.db.collection);
 
 // Add Swagger
 const swaggerOptions = {
@@ -27,7 +32,12 @@ const swaggerOptions = {
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+
+// Show requests
+if (config.logging.requests) {
+	app.use(logger('dev'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -40,6 +50,7 @@ app.use("/swagger.json", (req, res, next) => {
 // Load all routes
 app.use('/', require("./routes/index"));
 app.use("/dice", require("./routes/dice"));
+app.use("/characters", require("./routes/characters"));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

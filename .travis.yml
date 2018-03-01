@@ -1,3 +1,10 @@
 language: node_js
-node_js:
- - "node"
+nodejs:
+  - 7
+
+services:
+  - mongodb
+
+cache:
+  directories:
+    - "node_modules"
