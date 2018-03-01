@@ -7,11 +7,12 @@ var bodyParser = require('body-parser');
 const swagger = require("swagger-jsdoc");
 const dist = require("./package.json");
 const mongoose = require("mongoose");
+const config = require("./config/app.js");
 
 var app = express();
 
 // Connect to the database
-mongoose.connect("mongodb://localhost/dnd-api");
+mongoose.connect("mongodb://" + config.db.host + "/" + config.db.collection);
 
 // Add Swagger
 const swaggerOptions = {
@@ -31,7 +32,12 @@ const swaggerOptions = {
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+
+// Show requests
+if (config.logging.requests) {
+	app.use(logger('dev'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
