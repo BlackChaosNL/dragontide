@@ -1,0 +1,10 @@
+language: node_js
+nodejs:
+  - 7
+
+services:
+  - mongodb
+
+cache:
+  directories:
+    - "node_modules"
