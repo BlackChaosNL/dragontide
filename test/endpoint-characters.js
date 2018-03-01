@@ -10,7 +10,7 @@ describe("Test characters route", () => {
 	it("Returns a list of existing characters", done => {
 		purge("character")
 			.then(() => {
-				return fake("character", 30)
+				return fake("character", 30);
 			})
 			.then(characters => {
 				request(app)
