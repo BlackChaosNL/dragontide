@@ -3,7 +3,9 @@ const express = require('express'),
 	auth = require("../middleware/authentication"),
 	user = require("../models/user"),
 	token = require("../models/token"),
-	gh = require("../lib/generate-hash");
+	gh = require("../lib/generate-hash"),
+	vp = require("../lib/validate-password"),
+	random = require("randomstring");
 
 /**
  * @swagger
@@ -44,7 +46,24 @@ router.post('/register', (req, res, next) => {
  *         description: Returns an active login token, to start use the service.
  */
 router.post('/login', (req, res, next) => {
-
+	const data = req.body;
+	if (data.email == null || data.password == null)
+		return res.json({ ok: false, message: "E-mail or password is missing." });
+	user.findOne({ email: data.email }, (err, user) => {
+		if (err) return res.json({ ok: false, message: err });
+		if (!vp(data.password, user.password)) {
+			return res.json({ ok: false, message: "The username or password was not correct, please try again." });
+		}
+		var t = token({
+			userId: user.id,
+			token: random.generate(60),
+			expires: new Date().getHours() + (24 * 7)
+		});
+		t.save(err => {
+			if (err) return res.json({ ok: false, message: err });
+			return res.json({ ok: true, message: t.token });
+		});
+	});
 });
 
 /**
