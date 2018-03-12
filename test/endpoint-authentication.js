@@ -5,6 +5,7 @@ const fake = require("../lib/fake");
 const mongoose = require("mongoose");
 const request = require("supertest");
 const purge = require("../lib/purge-collection");
+const gh = require("../lib/generate-hash");
 
 describe("Test auth endpoint", () => {
 	it("Can register a player to the service", done => {
@@ -31,7 +32,7 @@ describe("Test auth endpoint", () => {
 			.post("/auth/login")
 			.send({
 				email: "test@test.xs",
-				password: "Testtesttest"
+				password: gh("Testtesttest")
 			})
 			.expect(200)
 			.end((err, res) => {
