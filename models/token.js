@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-module.exports = mongoose.model("token", new mongoose.Schema({
+module.exports = mongoose.model("Token", new mongoose.Schema({
 	userId: String,
 	token: String,
 	expires: Date

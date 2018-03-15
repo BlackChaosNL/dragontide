@@ -1,6 +1,5 @@
 const express = require('express'),
 	router = express.Router(),
-	auth = require("../middleware/authentication"),
 	user = require("../models/user"),
 	token = require("../models/token"),
 	gh = require("../lib/generate-hash"),
@@ -43,7 +42,7 @@ router.post('/register', (req, res, next) => {
  *     produces: application/json
  *     response:
  *       200:
- *         description: Returns an active login token, to start use the service.
+ *         description: Returns an active login token, to start using the service.
  */
 router.post('/login', (req, res, next) => {
 	const data = req.body;
@@ -57,7 +56,7 @@ router.post('/login', (req, res, next) => {
 		var t = token({
 			userId: user.id,
 			token: random.generate(60),
-			expires: new Date().getHours() + (24 * 7)
+			expires: new Date().setHours(new Date().getHours() + (24 * 7))
 		});
 		t.save(err => {
 			if (err) return res.json({ ok: false, message: err });
@@ -76,8 +75,12 @@ router.post('/login', (req, res, next) => {
  *       200:
  *         description: Removes the active login token, so the player is successfully logged out.
  */
-router.get('/logout', auth, (req, res, next) => {
-
+router.get('/logout', (req, res) => {
+	if (!req.authenticated) return res.status(401).send({ ok: false, message: "You are not logged in." });
+	token.findOneAndRemove({ token: req.token }).then((err) => {
+		if (err) return res.status(401).send({ ok: false, message: err });
+		return res.json({ ok: true, message: "You have been successfully logged out." });
+	});
 });
 
 module.exports = router;

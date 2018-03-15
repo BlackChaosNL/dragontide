@@ -3,8 +3,8 @@ const faker = require("faker");
 
 module.exports = () => {
 	return {
-		email: faker.internet.email,
-		username: faker.internet.username,
-		password: faker.internet.password
+		email: faker.internet.email(),
+		username: faker.internet.userName(),
+		password: faker.internet.password()
 	};
 };
