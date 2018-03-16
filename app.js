@@ -8,6 +8,7 @@ const swagger = require("swagger-jsdoc");
 const dist = require("./package.json");
 const mongoose = require("mongoose");
 const config = require("./config/app.js");
+const cors = require("cors");
 
 var app = express();
 
@@ -41,7 +42,9 @@ if (config.logging.requests) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require("./middleware/authentication"));
 
 app.use("/swagger.json", (req, res, next) => {
 	res.json(swagger(swaggerOptions));
@@ -51,16 +54,17 @@ app.use("/swagger.json", (req, res, next) => {
 app.use('/', require("./routes/index"));
 app.use("/dice", require("./routes/dice"));
 app.use("/characters", require("./routes/characters"));
+app.use("/auth", require("./routes/auth"));
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
 	next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 	const message = err.message || err;
 
 	// set locals, only providing error in development
