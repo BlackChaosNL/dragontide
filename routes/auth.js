@@ -76,10 +76,29 @@ router.post('/login', (req, res, next) => {
  *         description: Removes the active login token, so the player is successfully logged out.
  */
 router.get('/logout', (req, res) => {
-	if (!req.authenticated) return res.status(401).send({ ok: false, message: "You are not logged in." });
-	token.findOneAndRemove({ token: req.token }).then((err) => {
-		if (err) return res.status(401).send({ ok: false, message: err });
-		return res.json({ ok: true, message: "You have been successfully logged out." });
+	if (!req.authenticated) {
+		return res.status(401)
+			.send({
+				ok: false,
+				message: "You are not logged in."
+			});
+	}
+
+	token.findOneAndRemove({
+		token: req.token
+	}).then((err) => {
+		if (err) {
+			return res.status(401)
+				.send({
+					ok: false,
+					message: err
+				});
+		}
+
+		return res.json({
+			ok: true,
+			message: "You have been successfully logged out."
+		});
 	});
 });
 

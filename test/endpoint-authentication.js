@@ -60,10 +60,13 @@ describe("Test auth endpoint", () => {
 
 	it("An active user can logout from the service", done => {
 		fake("user").then(user => {
-			fake("token", 1, { userId: user.id }).then(token => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(token => {
 				request(app)
 					.get("/auth/logout")
-					.set('Authorization', 'Bearer ' + token.token)
+					.set('Authorization', 'Bearer ' + token[0].token)
 					.expect(200)
 					.end((err, res) => {
 						if (err) return done(err);
@@ -73,4 +76,8 @@ describe("Test auth endpoint", () => {
 			}).catch(err => done(err));
 		}).catch(err => done(err));
 	});
+});
+
+after(done => {
+	mongoose.connection.close(done);
 });
