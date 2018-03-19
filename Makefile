@@ -15,6 +15,6 @@ static:
 	$(jshint) --verbose test
 
 unit:
-	APP_ENV=test node_modules/.bin/mocha
+	APP_ENV=test node_modules/.bin/nyc node_modules/.bin/mocha
 
 .PHONY: test
