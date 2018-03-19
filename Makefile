@@ -15,6 +15,7 @@ static:
 	$(jshint) --verbose test
 
 unit:
-	APP_ENV=test node_modules/.bin/nyc node_modules/.bin/mocha
+	APP_ENV=test node_modules/.bin/nyc node_modules/.bin/mocha --report lcovonly \
+	-- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
 .PHONY: test
