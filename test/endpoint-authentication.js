@@ -62,6 +62,19 @@ describe("Test auth endpoint", () => {
 			});
 	});
 
+	it("A player can not forget an E-Mail address or Password while logging in.", done => {
+		request(app)
+			.post("/auth/login")
+			.send({})
+			.expect(200)
+			.end((err, res) => {
+				if (err) return done(err);
+				assert.isFalse(res.body.ok);
+				assert.isString(res.body.message);
+				done();
+			});
+	});
+
 	it("An active user can login to the service.", done => {
 		request(app)
 			.post("/auth/login")
