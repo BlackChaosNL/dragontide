@@ -122,8 +122,8 @@ describe("Test auth endpoint", () => {
 						assert.isTrue(res.body.ok);
 						done();
 					});
-			}).catch(err => done(err));
-		}).catch(err => done(err));
+			});
+		});
 	});
 
 	it("A non logged in user can not logout.", done => {
