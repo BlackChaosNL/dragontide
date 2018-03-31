@@ -26,7 +26,7 @@ router.post('/register', (req, res, next) => {
 	}, (err, p) => {
 		if (err) return res.json({ ok: false, message: err });
 		if (p) return res.json({ ok: false, message: "You already have an account on this service, please log in!" });
-		const newplayer = user({ email: data.email, username: data.username, password: gh(data.password) });
+		const newplayer = user({ email: data.email, username: data.username, password: gh(data.password), admin: false });
 		newplayer.save(err => {
 			if (err) return res.json({ ok: false, message: err });
 			return res.json({ ok: true });

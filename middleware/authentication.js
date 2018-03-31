@@ -1,4 +1,5 @@
-const token = require("../models/token");
+const token = require("../models/token"),
+	user = require("../models/user");
 
 module.exports = (req, res, next) => {
 	if (!req.headers.authorization) {
@@ -11,7 +12,9 @@ module.exports = (req, res, next) => {
 
 	if (reqtoken[0] != 'Bearer') return next();
 
-	token.findOne({ token: reqtoken[1] }, (err, token) => {
+	token.findOne({
+		token: reqtoken[1]
+	}, (err, token) => {
 		if (err) {
 			req.authenticated = false;
 
@@ -24,10 +27,27 @@ module.exports = (req, res, next) => {
 		const expiry = new Date(token.expires).getTime();
 
 		if (expiry < now) throw new Error("Bearer token expired.");
+		// Verify admin
+		user.findOne({
+			_id: token.userId
+		}, (err, admuser) => {
+			if (err) {
+				req.isAdmin = false;
+				return next(err);
+			};
+			if (!admuser) {
+				throw new Error("No user could be found in the system.");
+			}
+			if (admuser.admin) req.isAdmin = true;
 
-		req.authenticated = true;
-		req.token = token;
+			req.authenticated = true;
+			req.token = token;
 
-		return next();
+			return next();
+		});
+		// req.authenticated = true;
+		// req.token = token;
+
+		// return next();
 	});
 };
