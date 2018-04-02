@@ -201,6 +201,42 @@ describe("Test items route", () => {
 			.catch(err => done(err));
 	});
 
+	it("Returns a single item", done => {
+		fake("item")
+			.then(item => {
+				request(app)
+					.get("/items/" + item._id)
+					.expect(200)
+					.end((err, res) => {
+						if (err) return done(err);
+
+						assert.isTrue(res.body.ok);
+						assert.isOk(res.body.item);
+						assert.equal(res.body.item.name, item.name);
+
+						done();
+					});
+			})
+			.catch(err => done(err));
+	});
+
+	it("Returns an error when a given item doesnt exist", done => {
+		purge("item")
+			.then(() => {
+				request(app)
+					.get("/items/no")
+					.expect(404)
+					.end((err, res) => {
+						if (err) return done(err);
+
+						assert.isFalse(res.body.ok);
+
+						done();
+					});
+			})
+			.catch(err => done(err));
+	});
+
 	it("Creates a new item", done => {
 		request(app)
 			.post("/items")

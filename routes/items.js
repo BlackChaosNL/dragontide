@@ -104,6 +104,35 @@ router.post("/", (req, res, next) => {
 		.catch(err => res.json({ok: false, err: err}));
 });
 
+/**
+ * @swagger
+ * /items/{id}:
+ *   get:
+ *     description: Get info about a single item
+ *     produces: application/json
+ *     response:
+ *       200:
+ *         description: The full data of a single item
+ *       404:
+ *         description: The item was not found
+ */
+router.get("/:id", (req, res, next) => {
+	Item.findById(req.params.id, (err, item) => {
+		if (err) {
+			return res.status(404)
+				.json({
+					ok: false,
+					error: err,
+				});
+		}
+
+		return res.json({
+			ok: true,
+			item: item,
+		});
+	});
+});
+
 function getBaseItem(id)
 {
 	if (!id) {
