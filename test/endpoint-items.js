@@ -59,12 +59,12 @@ describe("Test items route", () => {
 				});
 			})
 			.then(items => {
-				return items.push(fake("item", 1, {
+				return items.concat(fake("item", 1, {
 					name: "Other Test",
 				}));
 			})
 			.then(items => {
-				return items.push(fake("item", 1, {
+				return items.concat(fake("item", 1, {
 					name: "Unrelated",
 				}));
 			})
@@ -107,12 +107,12 @@ describe("Test items route", () => {
 				});
 			})
 			.then(items => {
-				return items.push(fake("item", 1, {
+				return items.concat(fake("item", 1, {
 					name: "Yet another item used for testing. Not very interesting.",
 				}));
 			})
 			.then(items => {
-				return items.push(fake("item", 1, {
+				return items.concat(fake("item", 1, {
 					name: "ITS THE SWORD OF A THOUSAND FUCKING TRUTHS OH SHIT",
 				}));
 			})
@@ -157,14 +157,14 @@ describe("Test items route", () => {
 				});
 			})
 			.then(items => {
-				return items.push(fake("item", 1, {
+				return items.concat(fake("item", 1, {
 					stats: {
 						strength: 1
 					}
 				}));
 			})
 			.then(items => {
-				return items.push(fake("item", 1, {
+				return items.concat(fake("item", 1, {
 					stats: {
 						wisdom: 2
 					}
