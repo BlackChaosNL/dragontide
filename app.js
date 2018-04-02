@@ -56,6 +56,7 @@ app.use("/dice", require("./routes/dice"));
 app.use("/characters", require("./routes/characters"));
 app.use("/items", require("./routes/items"));
 app.use("/auth", require("./routes/auth"));
+app.use("/campaign", require("./routes/campaign"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

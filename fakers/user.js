@@ -5,6 +5,7 @@ module.exports = () => {
 	return {
 		email: faker.internet.email(),
 		username: faker.internet.userName(),
-		password: faker.internet.password()
+		password: faker.internet.password(),
+		admin: faker.random.boolean()
 	};
 };
