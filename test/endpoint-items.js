@@ -22,6 +22,8 @@ describe("Test items route", () => {
 						assert.isTrue(res.body.ok);
 						assert.isOk(res.body.items);
 						assert.equal(res.body.items.length, 20);
+
+						done();
 					});
 			})
 			.catch(err => done(err));
