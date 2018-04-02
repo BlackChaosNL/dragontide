@@ -14,11 +14,8 @@ static:
 	$(jshint) --verbose routes
 	$(jshint) --verbose test
 
-mocha:
-	APP_ENV=test $(bindir)/mocha
-
 unit:
-	APP_ENV=test $(bindir)/mocha
+	APP_ENV=test $(bindir)/nyc $(bindir)/mocha
 
 report:
 	$(bindir)/nyc report --reporter=text-lcov | $(bindir)/coveralls
