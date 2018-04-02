@@ -1,6 +1,6 @@
 const Item = require("../models/item");
 const express = require("express");
-const router = express.Route();
+const router = express.Router();
 
 /**
  * @swagger
@@ -27,3 +27,5 @@ router.get("/", (req, res, next) => {
 		});
 	});
 });
+
+module.exports = router;
