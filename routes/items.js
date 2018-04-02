@@ -1,6 +1,9 @@
 const Item = require("../models/item");
 const express = require("express");
+const itemTypes = require("../models/item-type");
+const pc = require("../lib/param-check");
 const router = express.Router();
+const statTypes = require("../models/stat-type");
 
 /**
  * @swagger
@@ -23,14 +26,7 @@ router.get("/", (req, res, next) => {
 		query.where("description", new RegExp(req.query.description, "i"));
 	}
 
-	statTypes = [
-		"strength",
-		"dexterity",
-		"constitution",
-		"intelligence",
-		"wisdom",
-		"charisma",
-	].forEach(s => {
+	statTypes.forEach(s => {
 		if (req.query[s]) {
 			query.where("stats." + s).gt(req.query[s]);
 		}
@@ -44,6 +40,57 @@ router.get("/", (req, res, next) => {
 		return res.json({
 			ok: true,
 			items: items,
+		});
+	});
+});
+
+/**
+ * @swagger
+ * /items:
+ *   post:
+ *     description: Add a new item
+ *     produces: application/json
+ *     response:
+ *       200:
+ *         description: The new item was created succesfully
+ */
+router.post("/", (req, res, next) => {
+	const data = req.body;
+
+	pc(data.name, x => x.match(/\w+/), "Item name is required");
+	pc(data.type, x => itemTypes.includes(x), "Item type is required");
+	pc(data.weight, x => 0 < x, "Item weight is required");
+
+	if (!data.description) {
+		data.description = "";
+	}
+
+	if (!data.additional) {
+		data.additional = "";
+	}
+
+	if (!data.stats) {
+		data.stats = {};
+	}
+
+	statTypes.forEach(s => {
+		if (!data.stats[s]) {
+			data.stats[s] = 0;
+		}
+	});
+
+	// Create the new Item
+	const item = Item(data);
+
+	// Save the item in the database
+	item.save(err => {
+		if (err) {
+			throw err;
+		}
+
+		return res.json({
+			ok: true,
+			item: item,
 		});
 	});
 });

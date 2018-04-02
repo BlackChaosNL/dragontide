@@ -1,14 +1,8 @@
 const Item = require("../models/item.js");
 const faker = require("faker");
+const itemTypes = require("../models/item-type");
 
 module.exports = () => {
-	const itemTypes = [
-		"Axe",
-		"Pantaloons",
-		"Ring",
-		"Sword",
-	];
-
 	return {
 		name: faker.name.findName(),
 		type: faker.random.arrayElement(itemTypes),

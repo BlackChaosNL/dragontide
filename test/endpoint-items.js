@@ -201,7 +201,7 @@ describe("Test items route", () => {
 			.catch(err => done(err));
 	});
 
-	it("can create a new item", done => {
+	it("Creates a new item", done => {
 		request(app)
 			.post("/items")
 			.send({
@@ -227,13 +227,13 @@ describe("Test items route", () => {
 				assert.isOk(res.body.item);
 				assert.equal(res.body.item.name, "Sword of a Thousand Truths");
 				assert.equal(res.body.item.stats.strength, 100);
-				assert.equal(res.body.item.stats.charisam, -5);
+				assert.equal(res.body.item.stats.charisma, -5);
 
 				done();
 			});
 	});
 
-	it("can create a new item from an existing item", done => {
+	it("Creates a new item from an existing item", done => {
 		purge("item")
 			.then(() => {
 				return fake("item", 1, {
@@ -268,7 +268,7 @@ describe("Test items route", () => {
 						assert.equal(res.body.item.name, "Sword of a Thousand Lies");
 						assert.equal(res.body.item.stats.strength, 1);
 						assert.equal(res.body.item.stats.wisdom, -100);
-						assert.equal(res.body.item.stats.charisam, -5);
+						assert.equal(res.body.item.stats.charisma, -5);
 
 						done();
 					});
