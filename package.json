@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "make test",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
