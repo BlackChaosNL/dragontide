@@ -45,9 +45,5 @@ module.exports = (req, res, next) => {
 
 			return next();
 		});
-		// req.authenticated = true;
-		// req.token = token;
-
-		// return next();
 	});
 };

@@ -34,7 +34,7 @@ describe("Test campaign endpoint", () => {
 	it("User can get a list of active campaigns.", done => {
 		fake("user").then(user => {
 			fake("token", 1, {
-				userId: user._id,
+				userId: user.id,
 				expires: new Date().setDate(new Date().getDate() + 1),
 			}).then(tokens => {
 				request(app)
@@ -47,7 +47,11 @@ describe("Test campaign endpoint", () => {
 						assert.isArray(res.body.campaigns);
 						done();
 					});
+			}).catch((err) => {
+				return done(err);
 			});
+		}).catch((err) => {
+			return done(err);
 		});
 	});
 
@@ -55,7 +59,7 @@ describe("Test campaign endpoint", () => {
 	it("User can get page two of active campaigns.", done => {
 		fake("user").then(user => {
 			fake("token", 1, {
-				userId: user._id,
+				userId: user.id,
 				expires: new Date().setDate(new Date().getDate() + 1),
 			}).then(tokens => {
 				request(app)
@@ -68,7 +72,11 @@ describe("Test campaign endpoint", () => {
 						assert.isArray(res.body.campaigns);
 						done();
 					});
+			}).catch((err) => {
+				return done(err);
 			});
+		}).catch((err) => {
+			return done(err);
 		});
 	});
 
@@ -77,11 +85,11 @@ describe("Test campaign endpoint", () => {
 		fake("user").then(user => {
 			fake("campaign").then(campaign => {
 				fake("token", 1, {
-					userId: user._id,
+					userId: user.id,
 					expires: new Date().setDate(new Date().getDate() + 1),
 				}).then(tokens => {
 					request(app)
-						.get("/campaign/" + campaign[0]._id)
+						.get("/campaign/" + campaign._id)
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.expect(200)
 						.end((err, res) => {
@@ -90,8 +98,14 @@ describe("Test campaign endpoint", () => {
 							assert.isObject(res.body.campaign);
 							done();
 						});
+				}).catch((err) => {
+					return done(err);
 				});
+			}).catch((err) => {
+				return done(err);
 			});
+		}).catch((err) => {
+			return done(err);
 		});
 	});
 
@@ -112,15 +126,15 @@ describe("Test campaign endpoint", () => {
 	it("User can create their own public campaign.", done => {
 		fake("user").then(user => {
 			fake("token", 1, {
-				userId: user._id,
+				userId: user.id,
 				expires: new Date().setDate(new Date().getDate() + 1),
 			}).then(tokens => {
 				request(app)
 					.post("/campaign/")
 					.set('Authorization', 'Bearer ' + tokens[0].token)
 					.send({
-						title: "Vistastische Campaign!",
-						private: false
+						name: "Vistastische Campaign!",
+						description: "We will fuck the fish up!"
 					})
 					.expect(200)
 					.end((err, res) => {
@@ -129,7 +143,11 @@ describe("Test campaign endpoint", () => {
 						assert.isObject(res.body.campaign);
 						done();
 					});
+			}).catch((err) => {
+				return done(err);
 			});
+		}).catch((err) => {
+			return done(err);
 		});
 	});
 
@@ -137,16 +155,16 @@ describe("Test campaign endpoint", () => {
 	it("User can create their own private campaign.", done => {
 		fake("user").then(user => {
 			fake("token", 1, {
-				userId: user._id,
+				userId: user.id,
 				expires: new Date().setDate(new Date().getDate() + 1),
 			}).then(tokens => {
 				request(app)
 					.post("/campaign/")
 					.set('Authorization', 'Bearer ' + tokens[0].token)
 					.send({
-						title: "Vistastische Campaign!",
-						private: true,
-						password: "vis"
+						name: "Vistastische Campaign!",
+						description: "We will fuck the fish up!",
+						password: "Fish"
 					})
 					.expect(200)
 					.end((err, res) => {
@@ -155,7 +173,11 @@ describe("Test campaign endpoint", () => {
 						assert.isObject(res.body.campaign);
 						done();
 					});
+			}).catch((err) => {
+				return done(err);
 			});
+		}).catch((err) => {
+			return done(err);
 		});
 	});
 
@@ -164,16 +186,15 @@ describe("Test campaign endpoint", () => {
 	it("GM can alter their own campaign. (Put)", done => {
 		fake("user").then(user => {
 			fake("campaign", 1, {
-				GM: user,
 				Private: false,
 				Password: null
 			}).then(campaign => {
 				fake("token", 1, {
-					userId: user._id,
+					userId: user.id,
 					expires: new Date().setDate(new Date().getDate() + 1),
 				}).then(tokens => {
 					request(app)
-						.put("/campaign/" + campaign._id)
+						.put("/campaign/" + campaign.id)
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.send({
 							title: "Vistastische Campaign #Continues!",
@@ -186,8 +207,14 @@ describe("Test campaign endpoint", () => {
 							assert.isTrue(res.body.ok);
 							done();
 						});
+				}).catch((err) => {
+					return done(err);
 				});
+			}).catch((err) => {
+				return done(err);
 			});
+		}).catch((err) => {
+			return done(err);
 		});
 	});
 
@@ -200,11 +227,11 @@ describe("Test campaign endpoint", () => {
 				Password: null
 			}).then(campaign => {
 				fake("token", 1, {
-					userId: user._id,
+					userId: user.id,
 					expires: new Date().setDate(new Date().getDate() + 1),
 				}).then(tokens => {
 					request(app)
-						.patch("/campaign/" + campaign._id)
+						.patch("/campaign/" + campaign.id)
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.send({
 							title: "Vistastische Campaign #Continues!",
@@ -230,11 +257,11 @@ describe("Test campaign endpoint", () => {
 				Password: null
 			}).then(campaign => {
 				fake("token", 1, {
-					userId: user._id,
+					userId: user.id,
 					expires: new Date().setDate(new Date().getDate() + 1),
 				}).then(tokens => {
 					request(app)
-						.get("/campaign/" + campaign._id + "/join")
+						.get("/campaign/" + campaign.id + "/join")
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.expect(200)
 						.end((err, res) => {
@@ -260,7 +287,7 @@ describe("Test campaign endpoint", () => {
 					expires: new Date().setDate(new Date().getDate() + 1),
 				}).then(tokens => {
 					request(app)
-						.post("/campaign/" + campaign._id + "/join")
+						.post("/campaign/" + campaign.id + "/join")
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.send({
 							password: "apples"
@@ -284,11 +311,11 @@ describe("Test campaign endpoint", () => {
 				Password: gh("fishstick")
 			}).then(campaign => {
 				fake("token", 1, {
-					userId: user._id,
+					userId: user.id,
 					expires: new Date().setDate(new Date().getDate() + 1),
 				}).then(tokens => {
 					request(app)
-						.post("/campaign/" + campaign._id + "/join")
+						.post("/campaign/" + campaign.id + "/join")
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.send({
 							password: "fishstick"
@@ -323,11 +350,11 @@ describe("Test campaign endpoint", () => {
 				Password: gh("fishstick")
 			}).then(campaign => {
 				fake("token", 1, {
-					userId: user._id,
+					userId: user.id,
 					expires: new Date().setDate(new Date().getDate() + 1),
 				}).then(tokens => {
 					request(app)
-						.delete("/campaign/" + campaign._id)
+						.delete("/campaign/" + campaign.id)
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.expect(200)
 						.end((err, res) => {
