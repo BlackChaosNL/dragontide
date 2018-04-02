@@ -133,6 +133,137 @@ router.get("/:campaignid", (req, res, next) => {
 			campaign
 		});
 	});
+}).put("/:campaignid", (req, res, next) => {
+	if (!req.authenticated) {
+		return res.status(401).json({
+			ok: false,
+			message: "Please log in to use this feature."
+		});
+	}
+
+	Campaigns.findById({
+		_id: req.params.campaignid
+	}, (err, campaign) => {
+		if (err) return {
+			ok: false,
+			message: err
+		};
+
+		if (!req.isAdmin && req.token.userId != campaign.dm) {
+			return res.json(401).json({
+				ok: false,
+				message: "You can not alter this campaign."
+			});
+		}
+
+		[
+			"title",
+			"description",
+			"dm",
+			"private",
+			"password"
+		].forEach(item => {
+			if (campaign[item] && req.body[item]) {
+				campaign[item] = req.body[item];
+			}
+		});
+
+		campaign.save(err => {
+			if (err) return res.status(404).json({
+				ok: false,
+				message: err
+			});
+			return res.json({
+				ok: true,
+				message: "Saved."
+			});
+		});
+	});
+}).patch("/:campaignid", (req, res, next) => {
+	if (!req.authenticated) {
+		return res.status(401).json({
+			ok: false,
+			message: "Please log in to use this feature."
+		});
+	}
+
+	Campaigns.findById({
+		_id: req.params.campaignid
+	}, (err, campaign) => {
+		if (err) return {
+			ok: false,
+			message: err
+		};
+
+		if (!req.isAdmin && req.token.userId != campaign.dm) {
+			return res.json(401).json({
+				ok: false,
+				message: "You can not alter this campaign."
+			});
+		}
+
+		[
+			"title",
+			"description",
+			"dm",
+			"private",
+			"password"
+		].forEach(item => {
+			if (campaign[item] && req.body[item]) {
+				campaign[item] = req.body[item];
+			}
+		});
+
+		campaign.save(err => {
+			if (err) return res.status(404).json({
+				ok: false,
+				message: err
+			});
+			return res.json({
+				ok: true,
+				message: "Saved."
+			});
+		});
+	});
+}).delete("/:campaignid", (req, res, next) => {
+	if (!req.authenticated) {
+		return res.status(401).json({
+			ok: false,
+			message: "Please log in to use this feature."
+		});
+	}
+	Campaigns.findOne({
+		_id: req.params.campaignid
+	}, (err, campaign) => {
+		if (err || campaign == null) return res.status(404).json({
+			ok: false,
+			message: "Campaign could not be found."
+		});
+
+		if (!req.isAdmin && req.token.userId != campaign.dm) {
+			return res.json(401).json({
+				ok: false,
+				message: "You can not remove this campaign."
+			});
+		}
+		Campaigns.findByIdAndRemove({
+			_id: req.params.campaignid
+		}, err => {
+			if (err) return res.status(404).json({
+				ok: false,
+				message: err
+			});
+
+			return res.json({
+				ok: true,
+				message: "Campaign has been removed."
+			});
+		});
+	});
 });
 
+
+router.get("/:campaignid/join", (req, res, next) => {
+	
+});
 module.exports = router;

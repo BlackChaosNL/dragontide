@@ -21,7 +21,7 @@ We included the following items for you to use with your own front-end:
 
 #### General usage
 - [X] Authentication.
-- [ ] Authorization.
+- [X] Authorization.
 
 #### Character
 - [X] General template for a D&D Character.
@@ -31,8 +31,11 @@ We included the following items for you to use with your own front-end:
 - [ ] Admin should be able to change character items, stats, etc.
 
 #### Campaign
-- [ ] List of open (public?) games.
-- [ ] Assign a DM.
+- [X] List of open (public?) games.
+- [X] Players can make their own campaign.
+- [X] Players can update their own campaign.
+- [X] Players can remove their made game.
+- [X] Assign a DM. (Done automatically while creating a room).
 - [ ] Revote DM when DM is inactive for `x` amount of time.
 - [ ] Invite players with code.
 - [ ] Campaign should be joinable with room-code.
@@ -46,7 +49,7 @@ We included the following items for you to use with your own front-end:
 
 #### Items
 - [ ] Generic item. (Assignable within Campaign)
-- [ ] Item stat assignable.
+- [X] Item stat assignable.
 - [ ] Descriptions.
 - [ ] Unique items per campaign.
 

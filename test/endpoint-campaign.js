@@ -185,16 +185,20 @@ describe("Test campaign endpoint", () => {
 	// put
 	it("GM can alter their own campaign. (Put)", done => {
 		fake("user").then(user => {
-			fake("campaign", 1, {
-				Private: false,
-				Password: null
-			}).then(campaign => {
-				fake("token", 1, {
-					userId: user.id,
-					expires: new Date().setDate(new Date().getDate() + 1),
-				}).then(tokens => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: true,
+					password: gh("fishstick")
+				}).then(campaign => {
 					request(app)
-						.put("/campaign/" + campaign.id)
+						.put("/campaign/" + campaign[0]._id)
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.send({
 							title: "Vistastische Campaign #Continues!",
@@ -207,31 +211,28 @@ describe("Test campaign endpoint", () => {
 							assert.isTrue(res.body.ok);
 							done();
 						});
-				}).catch((err) => {
-					return done(err);
 				});
-			}).catch((err) => {
-				return done(err);
 			});
-		}).catch((err) => {
-			return done(err);
 		});
 	});
 
 	// patch
 	it("GM can alter their own campaign. (Patch)", done => {
 		fake("user").then(user => {
-			fake("campaign", 1, {
-				GM: user,
-				Private: false,
-				Password: null
-			}).then(campaign => {
-				fake("token", 1, {
-					userId: user.id,
-					expires: new Date().setDate(new Date().getDate() + 1),
-				}).then(tokens => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: true,
+					password: gh("fishstick")
+				}).then(campaign => {
 					request(app)
-						.patch("/campaign/" + campaign.id)
+						.patch("/campaign/" + campaign[0]._id)
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.send({
 							title: "Vistastische Campaign #Continues!",
@@ -342,19 +343,23 @@ describe("Test campaign endpoint", () => {
 		return done();
 	});
 
-	// Leave a campaign.
-	it("User can leave a campaign", done => {
+	// DM can remove game.
+	it("DM can delete their own campaign.", done => {
 		fake("user").then(user => {
-			fake("campaign", 1, {
-				Private: true,
-				Password: gh("fishstick")
-			}).then(campaign => {
-				fake("token", 1, {
-					userId: user.id,
-					expires: new Date().setDate(new Date().getDate() + 1),
-				}).then(tokens => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: true,
+					password: gh("fishstick")
+				}).then(c => {
 					request(app)
-						.delete("/campaign/" + campaign.id)
+						.delete("/campaign/" + c[0]._id)
 						.set('Authorization', 'Bearer ' + tokens[0].token)
 						.expect(200)
 						.end((err, res) => {
