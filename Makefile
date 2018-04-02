@@ -2,7 +2,7 @@ bindir = node_modules/.bin
 jshint = $(bindir)/jshint
 mocha  = $(bindir)/mocha
 
-test: static unit
+test: static unit report
 
 static:
 	$(jshint) --verbose app.js
@@ -14,7 +14,13 @@ static:
 	$(jshint) --verbose routes
 	$(jshint) --verbose test
 
+mocha:
+	APP_ENV=test $(bindir)/mocha
+
 unit:
-	APP_ENV=test node_modules/.bin/nyc node_modules/.bin/mocha && node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls
+	APP_ENV=test $(bindir)/mocha
+
+report:
+	$(bindir)/nyc report --reporter=text-lcov | $(bindir)/coveralls
 
 .PHONY: test
