@@ -1,6 +1,7 @@
 const Item = require("../models/item");
 const express = require("express");
 const itemTypes = require("../models/item-type");
+const mergeObject = require("../lib/merge-object");
 const pc = require("../lib/param-check");
 const router = express.Router();
 const statTypes = require("../models/stat-type");
@@ -53,46 +54,80 @@ router.get("/", (req, res, next) => {
  *     response:
  *       200:
  *         description: The new item was created succesfully
+ *       404:
+ *         description: The base item could not be found
  */
 router.post("/", (req, res, next) => {
-	const data = req.body;
+	getBaseItem(req.query.base || 0)
+		.then(data => {
+			return mergeObject(data, req.body);
+		}).then(data => {
+			pc(data.name, x => x.match(/\w+/), "Item name is required");
+			pc(data.type, x => itemTypes.includes(x), "Item type is required");
+			pc(data.weight, x => 0 < x, "Item weight is required");
 
-	pc(data.name, x => x.match(/\w+/), "Item name is required");
-	pc(data.type, x => itemTypes.includes(x), "Item type is required");
-	pc(data.weight, x => 0 < x, "Item weight is required");
+			if (!data.description) {
+				data.description = "";
+			}
 
-	if (!data.description) {
-		data.description = "";
+			if (!data.additional) {
+				data.additional = "";
+			}
+
+			if (!data.stats) {
+				data.stats = {};
+			}
+
+			statTypes.forEach(s => {
+				if (!data.stats[s]) {
+					data.stats[s] = 0;
+				}
+			});
+
+			return data;
+		})
+		.then(data => {
+			return Item(data);
+		})
+		.then(item => {
+			item.save(err => {
+				if (err) {
+					throw err;
+				}
+
+				return res.json({
+					ok: true,
+					item: item,
+				});
+			});
+		})
+		.catch(err => res.json({ok: false, err: err}));
+});
+
+function getBaseItem(id)
+{
+	if (!id) {
+		return new Promise((resolve, reject) => {
+			return resolve({});
+		});
 	}
 
-	if (!data.additional) {
-		data.additional = "";
-	}
-
-	if (!data.stats) {
-		data.stats = {};
-	}
-
-	statTypes.forEach(s => {
-		if (!data.stats[s]) {
-			data.stats[s] = 0;
-		}
-	});
-
-	// Create the new Item
-	const item = Item(data);
-
-	// Save the item in the database
-	item.save(err => {
+	return Item.findById(id, (err, item) => {
 		if (err) {
 			throw err;
 		}
 
-		return res.json({
-			ok: true,
-			item: item,
-		});
+		return item;
+	}).then(item => {
+		// Parse to a clean JSON object
+		const object = JSON.parse(JSON.stringify(item));
+
+		// Remove garbage fields
+		delete object["__v"];
+		delete object["_id"];
+
+		return object;
 	});
-});
+}
 
 module.exports = router;
