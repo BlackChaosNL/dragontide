@@ -269,6 +269,30 @@ describe("Test items route", () => {
 			});
 	});
 
+	it("Sets defaults for most missing attributes when creating a new item", done => {
+		request(app)
+			.post("/items")
+			.send({
+				name: "Sword of a Thousand Default Values",
+				type: "Sword",
+				weight: 30,
+			})
+			.expect(200)
+			.end((err, res) => {
+				if (err) return done(err);
+
+				assert.isTrue(res.body.ok);
+				assert.isOk(res.body.item);
+				assert.equal(res.body.item.name, "Sword of a Thousand Default Values");
+				assert.equal(res.body.item.stats.strength, 0);
+				assert.equal(res.body.item.stats.charisma, 0);
+				assert.equal(res.body.item.description, "");
+				assert.equal(res.body.item.additional, "");
+
+				done();
+			});
+	});
+
 	it("Creates a new item from an existing item", done => {
 		purge("item")
 			.then(() => {
