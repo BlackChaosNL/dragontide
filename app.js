@@ -54,6 +54,7 @@ app.use("/swagger.json", (req, res, next) => {
 app.use('/', require("./routes/index"));
 app.use("/dice", require("./routes/dice"));
 app.use("/characters", require("./routes/characters"));
+app.use("/items", require("./routes/items"));
 app.use("/auth", require("./routes/auth"));
 
 // catch 404 and forward to error handler
