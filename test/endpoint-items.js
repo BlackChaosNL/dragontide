@@ -108,12 +108,12 @@ describe("Test items route", () => {
 			})
 			.then(items => {
 				return items.concat(fake("item", 1, {
-					name: "Yet another item used for testing. Not very interesting.",
+					description: "Yet another item used for testing. Not very interesting.",
 				}));
 			})
 			.then(items => {
 				return items.concat(fake("item", 1, {
-					name: "ITS THE SWORD OF A THOUSAND FUCKING TRUTHS OH SHIT",
+					description: "ITS THE SWORD OF A THOUSAND FUCKING TRUTHS OH SHIT",
 				}));
 			})
 			.then(items => {
@@ -186,7 +186,7 @@ describe("Test items route", () => {
 			})
 			.then(items => {
 				request(app)
-					.get("/items?stats=strength")
+					.get("/items?strength=0")
 					.expect(200)
 					.end((err, res) => {
 						if (err) return done(err);
