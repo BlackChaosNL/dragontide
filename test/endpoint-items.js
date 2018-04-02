@@ -64,7 +64,7 @@ describe("Test items route", () => {
 			.then(items => {
 				return items.push(fake("item", 1, {
 					name: "Unrelated",
-				});
+				}));
 			})
 			.then(items => {
 				request(app)
@@ -112,7 +112,7 @@ describe("Test items route", () => {
 			.then(items => {
 				return items.push(fake("item", 1, {
 					name: "ITS THE SWORD OF A THOUSAND FUCKING TRUTHS OH SHIT",
-				});
+				}));
 			})
 			.then(items => {
 				request(app)
@@ -166,7 +166,7 @@ describe("Test items route", () => {
 					stats: {
 						wisdom: 2
 					}
-				});
+				}));
 			})
 			.then(items => {
 				request(app)
