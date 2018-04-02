@@ -123,8 +123,8 @@ function getBaseItem(id)
 		const object = JSON.parse(JSON.stringify(item));
 
 		// Remove garbage fields
-		delete object["__v"];
-		delete object["_id"];
+		delete object.__v;
+		delete object._id;
 
 		return object;
 	});
