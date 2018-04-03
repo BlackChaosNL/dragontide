@@ -406,23 +406,21 @@ describe("Test campaign endpoint", () => {
 					private: true,
 					password: gh("alpacasso")
 				}).then(campaign => {
-					const cmp = campaign[0]._id;
+					const campaignId = campaign[0]._id;
+
 					fake("campaign-players", 1, {
-						campaignId: cmp,
+						campaignId: campaignId,
 						userId: user.id,
 						joinedAt: new Date(Date.now())
 					}).then(cplayers => {
-						console.log(cplayers[0].campaignId);
 						fake("invite", 1, {
 							invite: random.generate(60),
-							campaignId: cmp,
+							campaignId: campaignId,
 							invitedBy: user.id,
 							expires: new Date().setHours(new Date().getHours() + (24 * 7)),
 							accepted: false,
 							acceptedBy: ''
 						}).then(inv => {
-							console.log(inv[0].invitedBy);
-
 							request(app)
 								.post("/campaign/invite")
 								.set('Authorization', 'Bearer ' + tokens[0].token)
@@ -432,7 +430,9 @@ describe("Test campaign endpoint", () => {
 								.expect(200)
 								.end((err, res) => {
 									if (err) return done(err);
+
 									assert.isTrue(res.body.ok);
+
 									return done();
 								});
 						});

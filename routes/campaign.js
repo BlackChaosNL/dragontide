@@ -7,7 +7,8 @@ const express = require('express'),
 	vp = require("../lib/validate-password"),
 	cplayers = require("../models/campaign-players"),
 	invite = require("../models/invite"),
-	random = require("randomstring");
+	random = require("randomstring"),
+	Campaign = require("../models/campaign");
 
 /**
  * @swagger
@@ -149,7 +150,6 @@ router.post("/invite", (req, res, next) => {
 				message: err
 			});
 			
-			console.log(invite.campaignId);
 			const campplayers = cplayers({
 				userId: req.token.userId,
 				campaignId: invite.campaignId,
@@ -161,10 +161,14 @@ router.post("/invite", (req, res, next) => {
 					ok: false,
 					message: err
 				});
-				return res.json({
-					ok: true,
-					message: "You have joined the " + campaign.title + " campaign."
-				});
+
+				Campaign.findOne({"_id": invite.campaignId})
+					.then(campaign => {
+						return res.json({
+							ok: true,
+							message: "You have joined the " + campaign.title + " campaign."
+						});
+					}).catch(e => { throw e });
 			});
 		});
 	});
