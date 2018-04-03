@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const request = require("supertest");
 const purge = require("../lib/purge-collection");
 const gh = require("../lib/generate-hash");
+const random = require("randomstring");
 
 before(done => {
 	fake("user").then(user => {
@@ -181,7 +182,7 @@ describe("Test campaign endpoint", () => {
 		});
 	});
 
-	// Campaign can be altered when required by the GM.
+	// Campaign can be altered when required by the DM.
 	// put
 	it("GM can alter their own campaign. (Put)", done => {
 		fake("user").then(user => {
@@ -249,98 +250,196 @@ describe("Test campaign endpoint", () => {
 			});
 		});
 	});
-	// // Join a campaign.
-	// // Public.
-	// it("User can join a public campaign.", done => {
-	// 	fake("user").then(user => {
-	// 		fake("campaign", 1, {
-	// 			Private: false,
-	// 			Password: null
-	// 		}).then(campaign => {
-	// 			fake("token", 1, {
-	// 				userId: user.id,
-	// 				expires: new Date().setDate(new Date().getDate() + 1),
-	// 			}).then(tokens => {
-	// 				request(app)
-	// 					.get("/campaign/" + campaign.id + "/join")
-	// 					.set('Authorization', 'Bearer ' + tokens[0].token)
-	// 					.expect(200)
-	// 					.end((err, res) => {
-	// 						if (err) return done(err);
-	// 						assert.isTrue(res.body.ok);
-	// 						done();
-	// 					});
-	// 			});
-	// 		});
-	// 	});
-	// });
+	// Join a campaign.
+	// Public.
+	it("User can join a public campaign.", done => {
+		fake("user").then(user => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: false,
+					password: ''
+				}).then(campaign => {
+					request(app)
+						.post("/campaign/" + campaign[0]._id + "/join")
+						.set('Authorization', 'Bearer ' + tokens[0].token)
+						.expect(200)
+						.end((err, res) => {
+							if (err) return done(err);
+							assert.isTrue(res.body.ok);
+							done();
+						});
+				});
+			});
+		});
+	});
 
-	// // Private.
-	// // Wrong password.
-	// it("User can not join a private campaign without a password.", done => {
-	// 	fake("user").then(user => {
-	// 		fake("campaign", 1, {
-	// 			Private: true,
-	// 			Password: gh("fishstick")
-	// 		}).then(campaign => {
-	// 			fake("token", 1, {
-	// 				userId: user._id,
-	// 				expires: new Date().setDate(new Date().getDate() + 1),
-	// 			}).then(tokens => {
-	// 				request(app)
-	// 					.post("/campaign/" + campaign.id + "/join")
-	// 					.set('Authorization', 'Bearer ' + tokens[0].token)
-	// 					.send({
-	// 						password: "apples"
-	// 					})
-	// 					.expect(200)
-	// 					.end((err, res) => {
-	// 						if (err) return done(err);
-	// 						assert.isTrue(res.body.ok);
-	// 						done();
-	// 					});
-	// 			});
-	// 		});
-	// 	});
-	// });
+	// Private.
+	// Wrong password.
+	it("User can not join a private campaign with a wrong password.", done => {
+		fake("user").then(user => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: true,
+					password: gh("alpacasso")
+				}).then(campaign => {
+					request(app)
+						.post("/campaign/" + campaign[0]._id + "/join")
+						.set('Authorization', 'Bearer ' + tokens[0].token)
+						.send({
+							password: "Alpicasso"
+						})
+						.expect(401)
+						.end((err, res) => {
+							if (err) return done(err);
+							assert.isFalse(res.body.ok);
+							done();
+						});
+				});
+			});
+		});
+	});
 
-	// // Right password.
-	// it("User can join a private campaign with a password.", done => {
-	// 	fake("user").then(user => {
-	// 		fake("campaign", 1, {
-	// 			Private: true,
-	// 			Password: gh("fishstick")
-	// 		}).then(campaign => {
-	// 			fake("token", 1, {
-	// 				userId: user.id,
-	// 				expires: new Date().setDate(new Date().getDate() + 1),
-	// 			}).then(tokens => {
-	// 				request(app)
-	// 					.post("/campaign/" + campaign.id + "/join")
-	// 					.set('Authorization', 'Bearer ' + tokens[0].token)
-	// 					.send({
-	// 						password: "fishstick"
-	// 					})
-	// 					.expect(200)
-	// 					.end((err, res) => {
-	// 						if (err) return done(err);
-	// 						assert.isTrue(res.body.ok);
-	// 						done();
-	// 					});
-	// 			});
-	// 		});
-	// 	});
-	// });
-
+	// Right password.
+	it("User can join a private campaign with a right password.", done => {
+		fake("user").then(user => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: true,
+					password: gh("alpacasso")
+				}).then(campaign => {
+					request(app)
+						.post("/campaign/" + campaign[0]._id + "/join")
+						.set('Authorization', 'Bearer ' + tokens[0].token)
+						.send({
+							password: "alpacasso"
+						})
+						.expect(200)
+						.end((err, res) => {
+							if (err) return done(err);
+							assert.isTrue(res.body.ok);
+							done();
+						});
+				});
+			});
+		});
+	});
 	// Invite.
 	// Expired.
 	it("User can not join an invited campaign without a valid invite.", done => {
-		return done();
+		fake("user").then(user => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: true,
+					password: gh("alpacasso")
+				}).then(campaign => {
+					fake("campaign-players", 1, {
+						campaignId: campaign[0]._id,
+						userId: user.id,
+						joinedAt: new Date(Date.now())
+					}).then(cplayers => {
+						fake("invite", 1, {
+							invite: random.generate(60),
+							campaignId: campaign[0]._id,
+							invitedBy: user.id,
+							expires: new Date().setHours(new Date().getHours() + (24 * 7))
+						}).then(inv => {
+							request(app)
+								.post("/campaign/invite")
+								.set('Authorization', 'Bearer ' + tokens[0].token)
+								.send({
+									invite: inv[0].invite + "X"
+								})
+								.expect(404)
+								.end((err, res) => {
+									if (err) return done(err);
+									assert.isFalse(res.body.ok);
+									return done();
+								});
+						});
+					});
+				});
+			});
+		});
+		// return done();
 	});
 
 	// Active
 	it("User can join an invited campaign with a valid invite.", done => {
-		return done();
+		fake("user").then(user => {
+			fake("token", 1, {
+				userId: user.id,
+				expires: new Date().setDate(new Date().getDate() + 1),
+			}).then(tokens => {
+				fake("campaign", 1, {
+					title: "Visstick",
+					description: "We are the champions",
+					dm: user.id,
+					active: true,
+					private: true,
+					password: gh("alpacasso")
+				}).then(campaign => {
+					const cmp = campaign[0]._id;
+					fake("campaign-players", 1, {
+						campaignId: cmp,
+						userId: user.id,
+						joinedAt: new Date(Date.now())
+					}).then(cplayers => {
+						console.log(cplayers[0].campaignId);
+						fake("invite", 1, {
+							invite: random.generate(60),
+							campaignId: cmp,
+							invitedBy: user.id,
+							expires: new Date().setHours(new Date().getHours() + (24 * 7)),
+							accepted: false,
+							acceptedBy: ''
+						}).then(inv => {
+							console.log(inv[0].invitedBy);
+
+							request(app)
+								.post("/campaign/invite")
+								.set('Authorization', 'Bearer ' + tokens[0].token)
+								.send({
+									invite: inv[0].invite
+								})
+								.expect(200)
+								.end((err, res) => {
+									if (err) return done(err);
+									assert.isTrue(res.body.ok);
+									return done();
+								});
+						});
+					});
+				});
+			});
+		});
 	});
 
 	// DM can remove game.
