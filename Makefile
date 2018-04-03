@@ -2,7 +2,7 @@ bindir = node_modules/.bin
 jshint = $(bindir)/jshint
 mocha  = $(bindir)/mocha
 
-test: static unit report
+test: static unit
 
 static:
 	$(jshint) --verbose app.js
@@ -16,8 +16,5 @@ static:
 
 unit:
 	APP_ENV=test $(bindir)/nyc $(bindir)/mocha
-
-report:
-	$(bindir)/nyc report --reporter=text-lcov | $(bindir)/coveralls
 
 .PHONY: test

@@ -1,7 +1,7 @@
 const Item = require("../models/item");
 const express = require("express");
 const itemTypes = require("../models/item-type");
-const mergeObject = require("../lib/merge-object");
+const merge = require("merge");
 const pc = require("../lib/param-check");
 const router = express.Router();
 const statTypes = require("../models/stat-type");
@@ -60,7 +60,7 @@ router.get("/", (req, res, next) => {
 router.post("/", (req, res, next) => {
 	getBaseItem(req.query.base || 0)
 		.then(data => {
-			return mergeObject(data, req.body);
+			return merge.recursive(true, data, req.body);
 		}).then(data => {
 			pc(data.name, x => x.match(/\w+/), "Item name is required");
 			pc(data.type, x => itemTypes.includes(x), "Item type is required");
