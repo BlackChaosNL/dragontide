@@ -16,14 +16,6 @@ const express = require('express'),
  *         description: A list of 30 campaigns
  *		 401:
  *		   description: User is not logged in, or does not have valid credentials.
- *   post:
- *     description: Create a new campaign
- *     produces: application/json
- *     response:
- *       200:
- *         description: A campaign.
- *		 401:
- *		   description: User is not logged in, or does not have valid credentials.
  */
 router.get("/", (req, res, next) => {
 	if (!req.authenticated) {
@@ -100,8 +92,7 @@ router.get("/", (req, res, next) => {
  *     response:
  *       200:
  *         description: A single campaign
- *		 401:
- *		   description: User is not logged in, or does not have valid credentials.
+ *		 401: 
  */
 router.get("/:campaignid", (req, res, next) => {
 	if (!req.authenticated) {
@@ -264,6 +255,13 @@ router.get("/:campaignid", (req, res, next) => {
 
 
 router.get("/:campaignid/join", (req, res, next) => {
+	if (!req.authenticated) {
+		return res.status(401).json({
+			ok: false,
+			message: "Please log in to use this feature."
+		});
+	}
+
 	
 });
 module.exports = router;

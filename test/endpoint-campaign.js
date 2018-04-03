@@ -249,88 +249,88 @@ describe("Test campaign endpoint", () => {
 			});
 		});
 	});
-	// Join a campaign.
-	// Public.
-	it("User can join a public campaign.", done => {
-		fake("user").then(user => {
-			fake("campaign", 1, {
-				Private: false,
-				Password: null
-			}).then(campaign => {
-				fake("token", 1, {
-					userId: user.id,
-					expires: new Date().setDate(new Date().getDate() + 1),
-				}).then(tokens => {
-					request(app)
-						.get("/campaign/" + campaign.id + "/join")
-						.set('Authorization', 'Bearer ' + tokens[0].token)
-						.expect(200)
-						.end((err, res) => {
-							if (err) return done(err);
-							assert.isTrue(res.body.ok);
-							done();
-						});
-				});
-			});
-		});
-	});
+	// // Join a campaign.
+	// // Public.
+	// it("User can join a public campaign.", done => {
+	// 	fake("user").then(user => {
+	// 		fake("campaign", 1, {
+	// 			Private: false,
+	// 			Password: null
+	// 		}).then(campaign => {
+	// 			fake("token", 1, {
+	// 				userId: user.id,
+	// 				expires: new Date().setDate(new Date().getDate() + 1),
+	// 			}).then(tokens => {
+	// 				request(app)
+	// 					.get("/campaign/" + campaign.id + "/join")
+	// 					.set('Authorization', 'Bearer ' + tokens[0].token)
+	// 					.expect(200)
+	// 					.end((err, res) => {
+	// 						if (err) return done(err);
+	// 						assert.isTrue(res.body.ok);
+	// 						done();
+	// 					});
+	// 			});
+	// 		});
+	// 	});
+	// });
 
-	// Private.
-	// Wrong password.
-	it("User can not join a private campaign without a password.", done => {
-		fake("user").then(user => {
-			fake("campaign", 1, {
-				Private: true,
-				Password: gh("fishstick")
-			}).then(campaign => {
-				fake("token", 1, {
-					userId: user._id,
-					expires: new Date().setDate(new Date().getDate() + 1),
-				}).then(tokens => {
-					request(app)
-						.post("/campaign/" + campaign.id + "/join")
-						.set('Authorization', 'Bearer ' + tokens[0].token)
-						.send({
-							password: "apples"
-						})
-						.expect(200)
-						.end((err, res) => {
-							if (err) return done(err);
-							assert.isTrue(res.body.ok);
-							done();
-						});
-				});
-			});
-		});
-	});
+	// // Private.
+	// // Wrong password.
+	// it("User can not join a private campaign without a password.", done => {
+	// 	fake("user").then(user => {
+	// 		fake("campaign", 1, {
+	// 			Private: true,
+	// 			Password: gh("fishstick")
+	// 		}).then(campaign => {
+	// 			fake("token", 1, {
+	// 				userId: user._id,
+	// 				expires: new Date().setDate(new Date().getDate() + 1),
+	// 			}).then(tokens => {
+	// 				request(app)
+	// 					.post("/campaign/" + campaign.id + "/join")
+	// 					.set('Authorization', 'Bearer ' + tokens[0].token)
+	// 					.send({
+	// 						password: "apples"
+	// 					})
+	// 					.expect(200)
+	// 					.end((err, res) => {
+	// 						if (err) return done(err);
+	// 						assert.isTrue(res.body.ok);
+	// 						done();
+	// 					});
+	// 			});
+	// 		});
+	// 	});
+	// });
 
-	// Right password.
-	it("User can join a private campaign with a password.", done => {
-		fake("user").then(user => {
-			fake("campaign", 1, {
-				Private: true,
-				Password: gh("fishstick")
-			}).then(campaign => {
-				fake("token", 1, {
-					userId: user.id,
-					expires: new Date().setDate(new Date().getDate() + 1),
-				}).then(tokens => {
-					request(app)
-						.post("/campaign/" + campaign.id + "/join")
-						.set('Authorization', 'Bearer ' + tokens[0].token)
-						.send({
-							password: "fishstick"
-						})
-						.expect(200)
-						.end((err, res) => {
-							if (err) return done(err);
-							assert.isTrue(res.body.ok);
-							done();
-						});
-				});
-			});
-		});
-	});
+	// // Right password.
+	// it("User can join a private campaign with a password.", done => {
+	// 	fake("user").then(user => {
+	// 		fake("campaign", 1, {
+	// 			Private: true,
+	// 			Password: gh("fishstick")
+	// 		}).then(campaign => {
+	// 			fake("token", 1, {
+	// 				userId: user.id,
+	// 				expires: new Date().setDate(new Date().getDate() + 1),
+	// 			}).then(tokens => {
+	// 				request(app)
+	// 					.post("/campaign/" + campaign.id + "/join")
+	// 					.set('Authorization', 'Bearer ' + tokens[0].token)
+	// 					.send({
+	// 						password: "fishstick"
+	// 					})
+	// 					.expect(200)
+	// 					.end((err, res) => {
+	// 						if (err) return done(err);
+	// 						assert.isTrue(res.body.ok);
+	// 						done();
+	// 					});
+	// 			});
+	// 		});
+	// 	});
+	// });
 
 	// Invite.
 	// Expired.
