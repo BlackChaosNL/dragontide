@@ -166,9 +166,9 @@ router.post("/invite", (req, res, next) => {
 					.then(campaign => {
 						return res.json({
 							ok: true,
-							message: "You have joined the " + campaign.title + " campaign."
+							message: "You have joined the " + campaign.title + " campaign.",
 						});
-					}).catch(e => { throw e });
+					}).catch(e => { throw e; });
 			});
 		});
 	});
