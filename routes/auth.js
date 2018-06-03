@@ -47,7 +47,7 @@ router.post('/register', (req, res, next) => {
 router.post('/login', (req, res, next) => {
 	const data = req.body;
 	console.log(data);
-	console.log(data.username);
+	console.log(data.email);
 	console.log(data.password);
 	if (data.email == null || data.password == null)
 		return res.json({ ok: false, message: "E-mail or password is missing." });
