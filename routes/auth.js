@@ -47,7 +47,9 @@ router.post('/register', (req, res, next) => {
 router.post('/login', (req, res, next) => {
 	const data = req.body;
 	console.log(data);
-	if (data.email == null || data.password == null)
+	console.log(data.username);
+	console.log(data.password);
+	if (data.email == null or data.password == null)
 		return res.json({ ok: false, message: "E-mail or password is missing." });
 	user.findOne({ email: data.email }, (err, user) => {
 		if (err) return res.json({ ok: false, message: err });
