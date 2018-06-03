@@ -46,13 +46,11 @@ router.post('/register', (req, res, next) => {
  */
 router.post('/login', (req, res, next) => {
 	const data = req.body;
-	console.log(data);
-	console.log(data.email);
-	console.log(data.password);
 	if (data.email == null || data.password == null)
 		return res.json({ ok: false, message: "E-mail or password is missing." });
 	user.findOne({ email: data.email }, (err, user) => {
 		if (err) return res.json({ ok: false, message: err });
+		if (user == null) return res.status(404).json({ ok: false, message: "User does not exist, or could not be found." });
 		if (!vp(data.password, user.password)) {
 			return res.json({ ok: false, message: "The username or password was not correct, please try again." });
 		}
