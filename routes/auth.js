@@ -49,7 +49,7 @@ router.post('/login', (req, res, next) => {
 	console.log(data);
 	console.log(data.username);
 	console.log(data.password);
-	if (data.email == null or data.password == null)
+	if (data.email == null || data.password == null)
 		return res.json({ ok: false, message: "E-mail or password is missing." });
 	user.findOne({ email: data.email }, (err, user) => {
 		if (err) return res.json({ ok: false, message: err });
