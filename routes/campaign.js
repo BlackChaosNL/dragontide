@@ -32,7 +32,7 @@ router.get("/", (req, res, next) => {
 	// See characters.js for warning about pagination. (Wildly unstable)
 	const skip = ((req.query.page || 1) - 1) * 30;
 	const query = Campaigns.find({
-		Private: false
+		private: false
 	}).limit(30).skip(skip);
 
 	query.exec((err, campaigns) => {
@@ -213,7 +213,7 @@ router.get("/:campaignid", (req, res, next) => {
 
 		return res.json({
 			ok: true,
-			campaign
+			campaign: campaign,
 		});
 	});
 }).put("/:campaignid", (req, res, next) => {
