@@ -15,13 +15,11 @@ module.exports = (req, res, next) => {
 	token.findOne({
 		token: reqtoken[1]
 	}, (err, token) => {
-		if (err) {
+		if (err || !token) {
 			req.authenticated = false;
 
 			return next();
 		}
-
-		if (!token) throw new Error("No token found.");
 
 		const now = new Date().getTime();
 		const expiry = new Date(token.expires).getTime();
