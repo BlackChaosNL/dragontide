@@ -36,6 +36,7 @@ router.get("/", (req, res, next) => {
 	}).limit(30).skip(skip);
 
 	query.exec((err, campaigns) => {
+		console.log(campaigns);
 		if (err) throw new Error(err);
 		return res.json({
 			ok: true,
