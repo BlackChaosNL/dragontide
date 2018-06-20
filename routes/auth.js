@@ -61,7 +61,7 @@ router.post('/login', (req, res, next) => {
 		});
 		t.save(err => {
 			if (err) return res.json({ ok: false, message: err });
-			return res.json({ ok: true, message: t.token });
+			return res.json({ ok: true, message: t.token, t });
 		});
 	});
 });
