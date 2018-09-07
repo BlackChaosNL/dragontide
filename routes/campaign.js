@@ -72,7 +72,7 @@ router.get("/", (req, res, next) => {
 				dm: u._id,
 				active: true,
 				private: ((campaign_password == null) ? false : true),
-				password: ((campaign_password == null) ? "" : gh(campaign_password))
+				password: ((campaign_password == null) ? "" : campaign_password)
 			});
 			c.save((err) => {
 				if (err) return res.json({
@@ -149,7 +149,7 @@ router.post("/invite", (req, res, next) => {
 				ok: false,
 				message: err
 			});
-			
+
 			const campplayers = cplayers({
 				userId: req.token.userId,
 				campaignId: invite.campaignId,
@@ -184,7 +184,7 @@ router.post("/invite", (req, res, next) => {
  *     response:
  *       200:
  *         description: A single campaign
- *		 401: 
+ *		 401:
  */
 router.get("/:campaignid", (req, res, next) => {
 	if (!req.authenticated) {
@@ -362,7 +362,7 @@ router.get("/:campaignid", (req, res, next) => {
  *     response:
  *       200:
  *         description: A single campaign
- *		 401: 
+ *		 401:
  */
 router.post("/:campaignid/join", (req, res, next) => {
 	if (!req.authenticated) {
@@ -385,7 +385,7 @@ router.post("/:campaignid/join", (req, res, next) => {
 		});
 
 		if (campaign.private) {
-			if (!vp((!req.body.password) ? "" : req.body.password, campaign.password)) {
+			if (campaign.password !== (((!req.body.password) ? "" : req.body.password))) {
 				return res.status(401).json({
 					ok: false,
 					message: "Password for this campaign is not correct."
@@ -421,7 +421,7 @@ router.post("/:campaignid/join", (req, res, next) => {
  *     response:
  *       200:
  *         description: Returns a invite for joining a campaign.
- *		 401: 
+ *		 401:
  */
 router.get("/:campaignid/invite", (req, res, next) => {
 	if (!req.authenticated) {
