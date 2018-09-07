@@ -72,7 +72,7 @@ router.get("/", (req, res, next) => {
 				dm: u._id,
 				active: true,
 				private: ((campaign_password == null) ? false : true),
-				password: ((campaign_password == null) ? "" : gh(campaign_password))
+				password: ((campaign_password == null) ? "" : campaign_password)
 			});
 			c.save((err) => {
 				if (err) return res.json({
@@ -385,7 +385,8 @@ router.post("/:campaignid/join", (req, res, next) => {
 		});
 
 		if (campaign.private) {
-			if (!vp((!req.body.password) ? "" : req.body.password, campaign.password)) {
+			if (((!req.body.password) ? "" : req.body.password) == campaign.password) {
+// 				if (!vp((!req.body.password) ? "" : req.body.password, campaign.password)) {
 				return res.status(401).json({
 					ok: false,
 					message: "Password for this campaign is not correct."
