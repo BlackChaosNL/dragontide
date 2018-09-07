@@ -326,7 +326,7 @@ describe("Test campaign endpoint", () => {
 					dm: user.id,
 					active: true,
 					private: true,
-					password: gh("alpacasso")
+					password: "alpacasso"
 				}).then(campaign => {
 					request(app)
 						.post("/campaign/" + campaign[0]._id + "/join")
