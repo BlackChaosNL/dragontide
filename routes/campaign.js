@@ -149,7 +149,7 @@ router.post("/invite", (req, res, next) => {
 				ok: false,
 				message: err
 			});
-			
+
 			const campplayers = cplayers({
 				userId: req.token.userId,
 				campaignId: invite.campaignId,
@@ -184,7 +184,7 @@ router.post("/invite", (req, res, next) => {
  *     response:
  *       200:
  *         description: A single campaign
- *		 401: 
+ *		 401:
  */
 router.get("/:campaignid", (req, res, next) => {
 	if (!req.authenticated) {
@@ -362,7 +362,7 @@ router.get("/:campaignid", (req, res, next) => {
  *     response:
  *       200:
  *         description: A single campaign
- *		 401: 
+ *		 401:
  */
 router.post("/:campaignid/join", (req, res, next) => {
 	if (!req.authenticated) {
@@ -385,7 +385,7 @@ router.post("/:campaignid/join", (req, res, next) => {
 		});
 
 		if (campaign.private) {
-			if (campaign.password == (!req.body.password) ? "" : req.body.password)) {
+			if (campaign.password == (((!req.body.password) ? "" : req.body.password))) {
 // 				if (!vp((!req.body.password) ? "" : req.body.password, campaign.password)) {
 				return res.status(401).json({
 					ok: false,
@@ -422,7 +422,7 @@ router.post("/:campaignid/join", (req, res, next) => {
  *     response:
  *       200:
  *         description: Returns a invite for joining a campaign.
- *		 401: 
+ *		 401:
  */
 router.get("/:campaignid/invite", (req, res, next) => {
 	if (!req.authenticated) {
