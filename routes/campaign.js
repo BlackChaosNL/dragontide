@@ -385,7 +385,7 @@ router.post("/:campaignid/join", (req, res, next) => {
 		});
 
 		if (campaign.private) {
-			if (((!req.body.password) ? "" : req.body.password) == campaign.password) {
+			if (campaign.password == (!req.body.password) ? "" : req.body.password)) {
 // 				if (!vp((!req.body.password) ? "" : req.body.password, campaign.password)) {
 				return res.status(401).json({
 					ok: false,
