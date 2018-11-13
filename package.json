@@ -17,7 +17,7 @@
     "express": "~4.16.0",
     "merge": "^1.2.1",
     "mongoose": "^5.0.7",
-    "morgan": "~1.9.0",
+    "morgan": "~1.9.1",
     "randomstring": "^1.1.5",
     "serve-favicon": "~2.4.5",
     "swagger-jsdoc": "^1.10.0"
